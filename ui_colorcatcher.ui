@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>214</width>
-    <height>84</height>
+    <width>259</width>
+    <height>88</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,14 +17,29 @@
    <item>
     <widget class="QLabel" name="labelActive">
      <property name="text">
-      <string>This is color</string>
+      <string>RGB</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="labelMark">
-     <property name="text">
-      <string>This is color</string>
+    <widget class="QLineEdit" name="lineEditMark">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+     <property name="placeholderText">
+      <string>Press Space to mark!</string>
      </property>
     </widget>
    </item>

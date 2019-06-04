@@ -1,5 +1,6 @@
-import ColorCatcher
 from PyQt5.QtWidgets import QApplication
+
+import ColorCatcher
 
 if __name__ == '__main__':
     import sys

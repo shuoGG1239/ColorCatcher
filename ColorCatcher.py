@@ -1,47 +1,35 @@
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtGui import QPixmap, QGuiApplication, QColor, QCursor
+from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtGui import QGuiApplication, QColor, QCursor
 from PyQt5.QtWidgets import QWidget, QApplication
 
 import ui_colorcatcher
 
 
 class ColorCatcher(QWidget):
-    load_pixmap = None
-    signal_complete_capture = pyqtSignal(QPixmap)
-
     def __init__(self):
         QWidget.__init__(self)
         self.ui = ui_colorcatcher.Ui_ColorCatcher()
         self.ui.setupUi(self)
-        # self.load_background_pixmap()
-        # self.setCursor(Qt.CrossCursor)
+        self.ui.lineEditMark.setText("Press space to mark!")
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.catch)
+        self.timer.start(100)
+        self.setCursor(Qt.CrossCursor)
         self.show()
-        self.printColor()
 
-    def printColor(self):
+    def catch(self):
         x = QCursor.pos().x()
         y = QCursor.pos().y()
-
-        pixmap = QGuiApplication.primaryScreen().grabWindow(QApplication.desktop().winId())
+        pixmap = QGuiApplication.primaryScreen().grabWindow(QApplication.desktop().winId(), x, y, 1, 1)
         if not pixmap.isNull():
             image = pixmap.toImage()
             if not image.isNull():
                 if (image.valid(0, 0)):
-                    color = image.pixel(0, 0)
-                    print(QColor(color).getRgb())
-                    # r, g, b = color.red(), color.green(), color.blue()
-                    # print(r, g, b)
-                    self.ui.labelActive.setText("")
-
-    def load_background_pixmap(self):
-        # 截下当前屏幕的图像
-        self.load_pixmap = QGuiApplication.primaryScreen().grabWindow(QApplication.desktop().winId())
-        self.screen_width = self.load_pixmap.width()
-        self.screen_height = self.load_pixmap.height()
+                    color = QColor(image.pixel(0, 0))
+                    r, g, b, _ = color.getRgb()
+                    self.ui.labelActive.setText('(%d, %d, %d) %s' % (r, g, b, color.name().upper()))
+                    self.ui.lineEditMark.setStyleSheet('QLineEdit:focus{border:2px solid %s;}' % (color.name()))
 
     def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Escape:
-            self.close()
-        if event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:
-            self.signal_complete_capture.emit(self.capture_pixmap)
-            self.close()
+        if event.key() == Qt.Key_Space:
+            self.ui.lineEditMark.setText(self.ui.labelActive.text())

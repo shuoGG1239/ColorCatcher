@@ -14,6 +14,7 @@ class ColorCatcher(QWidget):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.catch)
         self.timer.start(100)
+        self.nowColor = None
         self.setCursor(Qt.CrossCursor)
         self.show()
 
@@ -27,9 +28,11 @@ class ColorCatcher(QWidget):
                 if (image.valid(0, 0)):
                     color = QColor(image.pixel(0, 0))
                     r, g, b, _ = color.getRgb()
-                    self.ui.labelActive.setText('(%d, %d, %d) %s' % (r, g, b, color.name().upper()))
-                    self.ui.lineEditMark.setStyleSheet('QLineEdit:focus{border:2px solid %s;}' % (color.name()))
+                    self.nowColor = color
+                    self.ui.lineEditMove.setText('(%d, %d, %d) %s' % (r, g, b, color.name().upper()))
+                    self.ui.lineEditMove.setStyleSheet('QLineEdit{border:2px solid %s;}' % (color.name()))
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Space:
-            self.ui.lineEditMark.setText(self.ui.labelActive.text())
+            self.ui.lineEditMark.setText(self.ui.lineEditMove.text())
+            self.ui.lineEditMark.setStyleSheet('QLineEdit{border:2px solid %s;}' % (self.nowColor.name()))
